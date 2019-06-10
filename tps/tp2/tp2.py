@@ -7,16 +7,18 @@ import random
 
 lista_bote = []
 lista_de_hinchas = []
+condition = threading.Condition()
 
-def a_bordo():
+def a_bordo(hincha):
         hincha = random.choice(lista_de_hinchas)
         lista_de_hinchas.remove(hincha)
+        hincha_a_subir = lista_de_hinchas.pop(hincha)
 
-        if hincha == 'R':
+        if hincha_a_subir == 'R':
                 print("vamos river")
         else:
                 print("vamos boca")
-        lista_bote.append(hincha)
+        lista_bote.append(hincha_a_subir)
 
         if len(lista_bote) == 4:
                 a_remar()
@@ -33,12 +35,21 @@ def a_remar():
                         break;
 
 def hincha_river():
-    lista_de_hinchas.append('R')
-    a_bordo()
+    #lista_de_hinchas.append('R')
+    #a_bordo()
+    while True:
+            condition.acquire()
+            hincha = 'R'
+            lista_de_hinchas.append(hincha)
+            a_bordo(hincha)
 
 def hincha_boca():
-    lista_de_hinchas.append('B')
-    a_bordo()
+    #lista_de_hinchas.append('B')
+    #a_bordo()
+    while True:
+            hincha = 'B'
+            lista_de_hinchas.append(hincha)
+            a_bordo(hincha)
 
 def barra_brava_river(cantidad_hinchas):
     """ Generacion de hinchas de River"""
@@ -68,3 +79,19 @@ barra_boca.join()
 t2.join()
 
 print("terminaron los viajes ")
+
+
+lista = ['1','2','3','4']
+
+def hola(var):
+        print("var es: ",var)
+        print("lo voy a sacar")
+        nuevo = lista.pop(int(var))
+        print("el nuevo es: ",nuevo)
+
+var = '4'
+lista.append(var)
+print("var:",var)
+print("lista:",lista)
+hola(var)
+print("quedo: ",lista)
