@@ -4,12 +4,12 @@ import os
 import argparse
 from multiprocessing import Process
 from multiprocessing import Queue
-
+#si al tamanio del bloque se le pone pocos bytes va a contar muchas mas palabras para el archivo /etc/services porque tiene palabras muy largas
 def ArgsParse():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--file", dest = "archivo", required = True, help = "Nombre del archivo") # it seems like nargs is not required...
-    parser.add_argument("-s", "--size", dest = "tamanio", nargs = "?", default = 2048, const = 1024, type = int, help = "Tamanio lectura")
-    parser.add_argument("-p", "--process", dest = "procesos", nargs = "?", default = 2, type = int, help = "Cantidad procesos") # it seems like nargs is not required...
+    parser.add_argument("-f", "--file", dest="archivo", required = True, help = "Nombre del archivo") # it seems like nargs is not required...
+    parser.add_argument("-s", "--size", dest="tamanio", nargs = "?", default = 2048, const = 1024, type = int, help = "Tamanio lectura")
+    parser.add_argument("-p", "--process", dest="procesos", nargs = "?", default = 2, type = int, help = "Cantidad procesos") # it seems like nargs is not required...
     return parser.parse_args()
 
 def CrearProcesos():
@@ -24,13 +24,13 @@ def LeerArchivo(nombreArchivo,cantidadbytes,colaTextoSplit,cantidadProcesos):
     fd = os.open(nombreArchivo,os.O_RDONLY)
     EOF = True
     indice = 0
-    c=0
+    c = 0
     while EOF :
         bloque = os.read(fd,cantidadbytes)
         for letra in bloque[::-1]:
+            #le agrego el salto de linea porque se me cortaba de nuevo
             indice = indice +1
             if (letra == " ") or letra == "\n":
-                #le agrego el salto de linea porque se me cortaba de nuevo
                 i = indice
                 indice = 0
                 break
@@ -52,14 +52,13 @@ def LeerArchivo(nombreArchivo,cantidadbytes,colaTextoSplit,cantidadProcesos):
 
 
 def ContarPalabras(colaResultadoSuma):
-    textoSplit = ""
+    texto_split = ""
     suma = 0
     while True:
-        textoSplit = colaTextoSplit.get()
-        if(textoSplit=="TERMINO"):
+        texto_split = colaTextoSplit.get()
+        if(texto_split=="TERMINO"):
             break
-        print textoSplit
-        cantidad = len(textoSplit)
+        cantidad = len(texto_split)
         suma = suma + cantidad
     colaResultadoSuma.put(suma)
  
