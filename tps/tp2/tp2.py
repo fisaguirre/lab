@@ -1,5 +1,7 @@
 #!/usr/bin/python3
+
 """ TP2 para ejercitar sincronizacion y sus problemas"""
+
 import threading
 import time
 import random
@@ -8,7 +10,15 @@ lista_bote = []
 lista_de_hinchas = []
 condition = threading.Condition()
 
-def a_bordo(hincha):
+def no_patotear():
+        while lista_bote.count("R") == 3 or lista_bote.count("B") == 3:
+                lista_de_hinchas.append(lista_bote.pop(0))
+                lista_bote.append(lista_de_hinchas.pop(0))
+        else:
+                print("Bote despues de la distribucion pareja:", lista_bote)
+
+def a_bordo():
+        print("Estan esperando: ",lista_de_hinchas)
         hincha_a_subir = lista_de_hinchas.pop()
 
         if hincha_a_subir == 'R':
@@ -20,16 +30,16 @@ def a_bordo(hincha):
         lista_bote.append(hincha_a_subir)
         
         if len(lista_bote) == 4:
+                no_patotear()
                 print("¡bote lleno!")
                 time.sleep(1)
                 a_remar()
                 time.sleep(1)
         condition.release()
-                #
 
 def a_remar():
         print("----------------")
-        print("A REMAR")
+        print("¡A REMAR!")
         print(lista_bote)
         while True:
                 for personas in range(4):
@@ -41,21 +51,21 @@ def a_remar():
                         break
 
 def hincha_river():
-    condition.acquire()
+    #condition.acquire()
     hincha = "R"
     lista_de_hinchas.append(hincha)
-    a_bordo(hincha)
+    condition.acquire()
+    a_bordo()
     if len(lista_bote) == 4:
-            print("hay 4")
             condition.wait()
 
 def hincha_boca():
-    condition.acquire()
+    #condition.acquire()
     hincha = "B"
     lista_de_hinchas.append(hincha)
-    a_bordo(hincha)
+    condition.acquire()
+    a_bordo()
     if len(lista_bote) == 4:
-            print("hay 4")
             condition.wait()
 
 def barra_brava_river(cantidad_hinchas):
@@ -76,8 +86,8 @@ def barra_brava_boca(cantidad_hinchas):
         boca.start()
         viajes = viajes + 1
 
-barra_river = threading.Thread(target=barra_brava_river, args=(8,))
-barra_boca = threading.Thread(target=barra_brava_boca, args=(8,))
+barra_river = threading.Thread(target=barra_brava_river, args=(10,))
+barra_boca = threading.Thread(target=barra_brava_boca, args=(10,))
 
 barra_river.start()
 barra_boca.start()
