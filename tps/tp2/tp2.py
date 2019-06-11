@@ -4,7 +4,6 @@
 
 import threading
 import time
-import random
 
 lista_bote = []
 lista_de_hinchas = []
@@ -18,7 +17,7 @@ def no_patotear():
                 print("Bote despues de la distribucion pareja:", lista_bote)
 
 def a_bordo():
-        print("Estan esperando: ",lista_de_hinchas)
+        #print("Estan esperando:", lista_de_hinchas)
         hincha_a_subir = lista_de_hinchas.pop()
 
         if hincha_a_subir == 'R':
@@ -26,9 +25,7 @@ def a_bordo():
         else:
                 print("vamos boca")
         time.sleep(1)
-
         lista_bote.append(hincha_a_subir)
-        
         if len(lista_bote) == 4:
                 no_patotear()
                 print("¡bote lleno!")
@@ -43,7 +40,7 @@ def a_remar():
         print(lista_bote)
         while True:
                 for personas in range(4):
-                        print("se baja del bote: ",lista_bote.pop())
+                        print("se baja del bote:", lista_bote.pop())
                         time.sleep(1)
                 if len(lista_bote) == 0:
                         print("Bote libre")
@@ -51,7 +48,6 @@ def a_remar():
                         break
 
 def hincha_river():
-    #condition.acquire()
     hincha = "R"
     lista_de_hinchas.append(hincha)
     condition.acquire()
@@ -60,7 +56,6 @@ def hincha_river():
             condition.wait()
 
 def hincha_boca():
-    #condition.acquire()
     hincha = "B"
     lista_de_hinchas.append(hincha)
     condition.acquire()
@@ -70,30 +65,27 @@ def hincha_boca():
 
 def barra_brava_river(cantidad_hinchas):
     """ Generacion de hinchas de River"""
-    viajes = 0
-    while viajes < cantidad_hinchas:
+    for cantidad in range(cantidad_hinchas):
         #time.sleep(random.randrange(0, 5))
         river = threading.Thread(target=hincha_river)
         river.start()
-        viajes = viajes + 1
 
 def barra_brava_boca(cantidad_hinchas):
     """ Generacion de hinchas de Boca"""
-    viajes = 0
-    while viajes < cantidad_hinchas:
+    for cantidad in range(cantidad_hinchas):
         #time.sleep(random.randrange(0, 5))
         boca = threading.Thread(target=hincha_boca)
         boca.start()
-        viajes = viajes + 1
 
-barra_river = threading.Thread(target=barra_brava_river, args=(10,))
-barra_boca = threading.Thread(target=barra_brava_boca, args=(10,))
+if __name__ == "__main__":
+        barra_river = threading.Thread(target=barra_brava_river, args=(20,))
+        barra_boca = threading.Thread(target=barra_brava_boca, args=(20,))
 
-barra_river.start()
-barra_boca.start()
+        barra_river.start()
+        barra_boca.start()
 
-barra_river.join()
-barra_boca.join()
+        barra_river.join()
+        barra_boca.join()
 
-print("terminaron los viajes ")
+        print("terminaron los viajes ")
 
