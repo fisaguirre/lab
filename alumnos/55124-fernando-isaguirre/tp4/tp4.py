@@ -57,14 +57,20 @@ for i in range(len(imageSources)):
     newUrl = parsedUrl.scheme + "://" + parsedUrl.netloc + parsedUrl.path
     imageSources[i] = newUrl
 
+ruta = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'
+listita = []
+for a in range(len(imageSources)):
+    listita.append(a)
+
 for url in imageSources:
     cantidad = len(url)
     print("la url es: ",url)
     if (url[cantidad-3::] == "jpg" or url[cantidad-3::] == "png"):
         try:
-            urllib.request.urlretrieve(url, '/home/fernando/Desktop/Compu2/lab/alumnos//55124-fernando-isaguirre/tp4/images/imagen.jpg')
+            urllib.request.urlretrieve(url, ruta+str((listita.pop()))+'.ppm')
         except urllib.error.HTTPError as e:
             print('status', e.code)
             print('reason', e.reason)
+    
 
 #agregar para ponerle nombres a las imagenes
