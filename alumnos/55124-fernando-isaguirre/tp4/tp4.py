@@ -8,7 +8,7 @@ import urllib.error
 from urllib.request import urlopen
 import sys
 import getopt
-
+import os
 opciones, argumentos = getopt.getopt(sys.argv[1:], "u:h")
 
 #Bucle para recorrer el arreglo y localizar el url de la página.
@@ -38,15 +38,12 @@ for host in hosts:
 
 # Extract images
 for host in hosts:
-    print("el host es: ",host)
     images = contents[host].findAll("img")
     for img in images:
         imgUrl = img.get("src")
-        print("mia es: ",imgUrl)
         if imgUrl[0] == "/":
             #esto es para los que le falta el hostname
             imgUrl = host + imgUrl
-            print("segunda es: ",imgUrl)
         imageSources.append(imgUrl)
 
 for i in range(len(imageSources)):
@@ -64,13 +61,26 @@ for a in range(len(imageSources)):
 
 for url in imageSources:
     cantidad = len(url)
-    print("la url es: ",url)
-    if (url[cantidad-3::] == "jpg" or url[cantidad-3::] == "png"):
+    if (url[cantidad-3::] == "jpg"):
         try:
-            urllib.request.urlretrieve(url, ruta+str((listita.pop()))+'.ppm')
+            nombre_imagen= listita.pop()
+            urllib.request.urlretrieve(url, ruta+str(nombre_imagen)+".jpg")
+            a = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
+            im = Image.open(a+".jpg").convert('RGB').save(a+".ppm")
+            os.remove(a+".jpg")
+            #convert('rgb') sirve porque sino salta un error para convertirla a ppm
         except urllib.error.HTTPError as e:
             print('status', e.code)
             print('reason', e.reason)
-    
+    if (url[cantidad-3::] == "png"):
+        try:
+            nombre_imagen= listita.pop()
+            urllib.request.urlretrieve(url, ruta+str(nombre_imagen)+'.png')
+            a = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
+            im = Image.open(a+".png").convert('RGB').save(a+".ppm")
+            os.remove(a+".png")
+        except urllib.error.HTTPError as e:
+            print('status', e.code)
+            print('reason', e.reason)
 
 #agregar para ponerle nombres a las imagenes
