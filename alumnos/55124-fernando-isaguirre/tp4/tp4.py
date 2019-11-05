@@ -8,8 +8,86 @@ import urllib.error
 from urllib.request import urlopen
 import sys
 import getopt
-import os
 import array
+import os
+
+def color_rojo(ruta):
+    fd = os.open(ruta+".ppm", os.O_RDONLY)
+
+    cabecera = os.read(fd,16)
+    cabecera_split = str(cabecera).split("\\n")
+
+    p_image = cabecera_split[0][2] + cabecera_split[0][3]
+    width = int(cabecera_split[1].split()[0])
+    height = int(cabecera_split[1].split()[1])
+    max_value = int(cabecera_split[2])
+
+    ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
+    imorig = os.read(fd, width*height*3)
+
+    image = array.array('B', [0, 0, 0] * width * height)
+
+    for x in range(0, height):
+        for y in range(0, width):
+            index = 3 * (x * width + y)
+            image[index + 0] = imorig[index + 0]
+
+    ## Save the PPM image as a binary file
+    f =  open(ruta+'rojo.ppm', 'wb')
+    f.write(bytearray(ppm_header, 'ascii'))
+    image.tofile(f)
+def color_azul(ruta):
+    fd = os.open(ruta+".ppm", os.O_RDONLY)
+
+    cabecera = os.read(fd,15)
+    #con el azul tengo que leer 15 bytes(solucionar)
+    #salta index error
+    cabecera_split = str(cabecera).split("\\n")
+
+    p_image = cabecera_split[0][2] + cabecera_split[0][3]
+    width = int(cabecera_split[1].split()[0])
+    height = int(cabecera_split[1].split()[1])
+    max_value = int(cabecera_split[2])
+
+    ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
+    imorig = os.read(fd, width*height*3)
+
+    image = array.array('B', [0, 0, 0] * width * height)
+
+    for x in range(0, height):
+        for y in range(0, width):
+            index = 3 * (x * width + y)
+            image[index + 2] = imorig[index + 2]
+
+    ## Save the PPM image as a binary file
+    f =  open(ruta+'azul.ppm', 'wb')
+    f.write(bytearray(ppm_header, 'ascii'))
+    image.tofile(f)
+def color_verde(ruta):
+    fd = os.open(ruta+".ppm", os.O_RDONLY)
+
+    cabecera = os.read(fd,16)
+    cabecera_split = str(cabecera).split("\\n")
+
+    p_image = cabecera_split[0][2] + cabecera_split[0][3]
+    width = int(cabecera_split[1].split()[0])
+    height = int(cabecera_split[1].split()[1])
+    max_value = int(cabecera_split[2])
+
+    ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
+    imorig = os.read(fd, width*height*3)
+
+    image = array.array('B', [0, 0, 0] * width * height)
+
+    for x in range(0, height):
+        for y in range(0, width):
+            index = 3 * (x * width + y)
+            image[index + 1] = imorig[index + 1]
+
+    ## Save the PPM image as a binary file
+    f =  open(ruta+'verde.ppm', 'wb')
+    f.write(bytearray(ppm_header, 'ascii'))
+    image.tofile(f)
 
 opciones, argumentos = getopt.getopt(sys.argv[1:], "u:h")
 
@@ -70,10 +148,13 @@ for url in imageSources:
         try:
             nombre_imagen= listita.pop()
             urllib.request.urlretrieve(url, ruta+str(nombre_imagen)+".jpg")
-            a = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
-            im = Image.open(a+".jpg").convert('RGB').save(a+".ppm")
-            os.remove(a+".jpg")
+            ruta_imagen = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
+            im = Image.open(ruta_imagen+".jpg").convert('RGB').save(ruta_imagen+".ppm")
+            os.remove(ruta_imagen+".jpg")
             #convert('rgb') sirve porque sino salta un error para convertirla a ppm
+            color_rojo(ruta_imagen)
+            color_azul(ruta_imagen)
+            color_verde(ruta_imagen)
         except urllib.error.HTTPError as e:
             print('status', e.code)
             print('reason', e.reason)
@@ -81,55 +162,12 @@ for url in imageSources:
         try:
             nombre_imagen= listita.pop()
             urllib.request.urlretrieve(url, ruta+str(nombre_imagen)+'.png')
-            a = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
-            im = Image.open(a+".png").convert('RGB').save(a+".ppm")
-            os.remove(a+".png")
+            ruta_imagen = '/home/fernando/Desktop/Compu2/lab/alumnos/55124-fernando-isaguirre/tp4/images/'+str(nombre_imagen)
+            im = Image.open(ruta_imagen+".png").convert('RGB').save(ruta_imagen+".ppm")
+            os.remove(ruta_imagen+".png")
+            color_rojo(ruta_imagen)
+            color_azul(ruta_imagen)
+            color_verde(ruta_imagen)
         except urllib.error.HTTPError as e:
             print('status', e.code)
             print('reason', e.reason)
-
-#agregar para ponerle nombres a las imagenes
-
-
-def color():
-import os
-import array
-#import imagesize
-from PIL import Image
-
-fd = os.open("24.ppm", os.O_RDONLY)
-
-#width, height = imagesize.get("dog.ppm")
-#print(width, height)
-
-cabecera = os.read(fd,16)
-print("cabecera: ",cabecera)
-cabecera_split = str(cabecera).split("\\n")
-print("cabecera_split: ",cabecera_split)
-p_image = cabecera_split[0][2] + cabecera_split[0][3]
-width = int(cabecera_split[1].split()[0])
-height = int(cabecera_split[1].split()[1])
-max_value = int(cabecera_split[2])
-
-#p_image = "P6"
-#width = 250
-#height = 188
-#max_value = 255
-ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
-print("la ultima cabecera es: ",ppm_header)
-imorig = os.read(fd, width*height*3)
-
-# PPM image data (filled with blue)
-image = array.array('B', [0, 0, 0] * width * height)
-
-# Fill with red the rectangle with origin at (10, 10) and width x height = 50 x 80 pixels
-for x in range(0, height):
-    for y in range(0, width):
-        index = 3 * (x * width + y)
-#        image[index] = imorig[index]           # red channel
-        image[index + 0] = imorig[index + 0]
-#        image[index + 2] = imorig[index + 2]
-## Save the PPM image as a binary file
-f =  open('dog2.ppm', 'wb')
-f.write(bytearray(ppm_header, 'ascii'))
-image.tofile(f)
