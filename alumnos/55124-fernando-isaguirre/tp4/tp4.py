@@ -9,6 +9,8 @@ from urllib.request import urlopen
 import sys
 import getopt
 import os
+import array
+
 opciones, argumentos = getopt.getopt(sys.argv[1:], "u:h")
 
 #Bucle para recorrer el arreglo y localizar el url de la página.
@@ -62,6 +64,9 @@ for a in range(len(imageSources)):
 for url in imageSources:
     cantidad = len(url)
     if (url[cantidad-3::] == "jpg"):
+        #donde empieza
+        #cantidad de caracteres
+        #cada tantos caracteres
         try:
             nombre_imagen= listita.pop()
             urllib.request.urlretrieve(url, ruta+str(nombre_imagen)+".jpg")
@@ -84,3 +89,48 @@ for url in imageSources:
             print('reason', e.reason)
 
 #agregar para ponerle nombres a las imagenes
+
+
+def color():
+    #!/usr/bin/python3
+import os
+import array
+#import imagesize
+from PIL import Image
+
+fd = os.open("26.ppm", os.O_RDONLY)
+
+#width, height = imagesize.get("dog.ppm")
+#print(width, height)
+"""
+cabecera = os.read(fd,28)
+print("cabecera: ",cabecera)
+cabecera_split = str(cabecera).split("\\n")
+print("cabecera_split: ",cabecera_split)
+p_image = cabecera_split[0][2] + cabecera_split[0][3]
+width = int(cabecera_split[1].split()[0])
+height = int(cabecera_split[1].split()[1])
+max_value = int(cabecera_split[2])
+"""
+p_image = "P6"
+width = 250
+height = 188
+max_value = 255
+ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
+print("la ultima cabecera es: ",ppm_header)
+imorig = os.read(fd, width*height*3)
+
+# PPM image data (filled with blue)
+image = array.array('B', [0, 0, 0] * width * height)
+
+# Fill with red the rectangle with origin at (10, 10) and width x height = 50 x 80 pixels
+for x in range(0, height):
+    for y in range(0, width):
+        index = 3 * (x * width + y)
+#        image[index] = imorig[index]           # red channel
+        image[index + 0] = imorig[index + 0]
+#        image[index + 2] = imorig[index + 2]
+## Save the PPM image as a binary file
+f =  open('dog2.ppm', 'wb')
+f.write(bytearray(ppm_header, 'ascii'))
+image.tofile(f)
