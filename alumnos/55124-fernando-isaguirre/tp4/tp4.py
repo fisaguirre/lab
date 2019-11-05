@@ -92,18 +92,17 @@ for url in imageSources:
 
 
 def color():
-    #!/usr/bin/python3
 import os
 import array
 #import imagesize
 from PIL import Image
 
-fd = os.open("26.ppm", os.O_RDONLY)
+fd = os.open("24.ppm", os.O_RDONLY)
 
 #width, height = imagesize.get("dog.ppm")
 #print(width, height)
-"""
-cabecera = os.read(fd,28)
+
+cabecera = os.read(fd,16)
 print("cabecera: ",cabecera)
 cabecera_split = str(cabecera).split("\\n")
 print("cabecera_split: ",cabecera_split)
@@ -111,11 +110,11 @@ p_image = cabecera_split[0][2] + cabecera_split[0][3]
 width = int(cabecera_split[1].split()[0])
 height = int(cabecera_split[1].split()[1])
 max_value = int(cabecera_split[2])
-"""
-p_image = "P6"
-width = 250
-height = 188
-max_value = 255
+
+#p_image = "P6"
+#width = 250
+#height = 188
+#max_value = 255
 ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
 print("la ultima cabecera es: ",ppm_header)
 imorig = os.read(fd, width*height*3)
