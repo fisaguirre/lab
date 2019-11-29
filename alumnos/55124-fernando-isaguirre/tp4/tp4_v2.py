@@ -60,8 +60,6 @@ opciones, argumentos = getopt.getopt(sys.argv[1:], "u:h")
 
 URLs_images = ""
 
-def OpcAyuda():
-    print("hola")
 for o in opciones:
     if o[0] == "-h":
         OpcAyuda()
