@@ -28,3 +28,4 @@ def verde(ruta):
     f =  open(ruta+'verde.ppm', 'wb')
     f.write(bytearray(ppm_header, 'ascii'))
     image.tofile(f)
+    

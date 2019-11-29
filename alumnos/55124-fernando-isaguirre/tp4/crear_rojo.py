@@ -5,7 +5,6 @@ import os
 
 def rojo(ruta):
     fd = os.open(ruta+".ppm", os.O_RDONLY)
-
     cabecera = os.read(fd,16)
     cabecera_split = str(cabecera).split("\\n")
 
@@ -15,15 +14,14 @@ def rojo(ruta):
     max_value = int(cabecera_split[2])
 
     ppm_header = p_image + ' ' + str(width) + ' ' + str(height) + ' ' + str(max_value) + "\n"
+
     imorig = os.read(fd, width*height*3)
-
     image = array.array('B', [0, 0, 0] * width * height)
-
+    
     for x in range(0, height):
         for y in range(0, width):
             index = 3 * (x * width + y)
             image[index + 0] = imorig[index + 0]
-
     ## Save the PPM image as a binary file
     f =  open(ruta+'rojo.ppm', 'wb')
     f.write(bytearray(ppm_header, 'ascii'))
