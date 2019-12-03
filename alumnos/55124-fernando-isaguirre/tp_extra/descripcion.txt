@@ -1,0 +1,5 @@
+
+Dentro del for concateno todos los elementos para poder hashear(transformando todo a string)
+Uso el modulo hashlib para hashear el string
+Uso hexdigest para hashearlo a hexa
+Hago una condicion para verificar si el hash que realice empieza con cinco "0" y si se verifica encuentro mi nuevo hash y salgo del bucle
